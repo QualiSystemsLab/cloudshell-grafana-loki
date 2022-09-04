@@ -1,0 +1,43 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+metadata:
+  template_name: Loki Grafana Server
+  template_author: Anonymous
+  template_version: 0.1.0
+  template_icon: shell-icon.png
+
+description: >
+  TOSCA based resource shell
+
+imports:
+  - cloudshell_standard: cloudshell_resource_standard_2_0_3.yaml
+
+node_types:
+
+  vendor.resource.Loki Grafana Server:
+    derived_from: cloudshell.nodes.GenericResource
+    properties:
+      grafana dashboard url:
+        type: string          # optional values: string, integer, float, boolean, cloudshell.datatypes.Password
+        default: http://localhost:3000/goto/IXuCCtX7z?orgId=1
+        description: Some attribute description
+    capabilities:
+      auto_discovery_capability:
+        type: cloudshell.capabilities.AutoDiscovery
+        properties:        
+          enable_auto_discovery:
+            type: boolean
+            default: true
+          auto_discovery_description:
+            type: string
+            default: Describe the auto discovery
+          inventory_description:
+            type: string
+            default: Describe the resource shell template
+    artifacts:
+      icon:
+        file: shell-icon.png
+        type: tosca.artifacts.File
+      driver:
+        file: LokiGrafanaServerDriver.zip
+        type: tosca.artifacts.File

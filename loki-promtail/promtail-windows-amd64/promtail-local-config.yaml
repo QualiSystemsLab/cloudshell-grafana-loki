@@ -1,0 +1,32 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://localhost:3100/loki/api/v1/push
+
+scrape_configs:
+- job_name: qualiserver
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      job: qualiserver
+      __path__: "C:\\Program Files (x86)\\QualiSystems\\CloudShell\\Server\\JsonLogs\\*.log"
+- job_name: executionserver
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      job: executionserver
+      __path__: "C:\\Program Files (x86)\\QualiSystems\\TestShell\\ExecutionServer\\JsonLogs\\*.log"
+- job_name: sandboxlogs
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      job: sandboxlogs
+      __path__: "C:\\ProgramData\\QualiSystems\\logs\\**\\*.log"
