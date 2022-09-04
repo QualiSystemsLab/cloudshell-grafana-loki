@@ -49,9 +49,10 @@ Pull sandbox setup via wildcard filter:
 ## Grafana Loki Server Shell
 Dashboards can be explored directly in Grafana, or alternatively a cloudshell shell can pull aggregated Loki Log data directly into sandbox console.
 As cloudshell shells have access to the sandbox ID via it's context object, this can be forwarded directly into shell commands / Loki queries.
+
 Common use case - Setup fails, user can trigger command directly from sandbox to pull target log records and troubleshoot.
 
-Sample command:
+#### Sample Shell command
 
 ![Loki Cloudshell Service](images/grafana-server-shell.png)
 
