@@ -1,0 +1,2 @@
+cloudshell-orch-core>=4.0.0.0,<4.1.0.0
+cloudshell-sandbox-reporter

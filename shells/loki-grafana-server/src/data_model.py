@@ -155,6 +155,111 @@ class LokiGrafanaServer(object):
         return 'LokiGrafanaServer'
 
     @property
+    def loki_port(self):
+        """
+        :rtype: float
+        """
+        return self.attributes['Loki Grafana Server.loki port'] if 'Loki Grafana Server.loki port' in self.attributes else None
+
+    @loki_port.setter
+    def loki_port(self, value='3100'):
+        """
+        port loki is hosted on
+        :type value: float
+        """
+        self.attributes['Loki Grafana Server.loki port'] = value
+
+    @property
+    def loki_https(self):
+        """
+        :rtype: bool
+        """
+        return self.attributes['Loki Grafana Server.loki https'] if 'Loki Grafana Server.loki https' in self.attributes else None
+
+    @loki_https.setter
+    def loki_https(self, value=False):
+        """
+        set to true for https protocol
+        :type value: bool
+        """
+        self.attributes['Loki Grafana Server.loki https'] = value
+
+    @property
+    def sandbox_api_ip(self):
+        """
+        :rtype: str
+        """
+        return self.attributes['Loki Grafana Server.sandbox api ip'] if 'Loki Grafana Server.sandbox api ip' in self.attributes else None
+
+    @sandbox_api_ip.setter
+    def sandbox_api_ip(self, value):
+        """
+        ip of sandbox api server
+        :type value: str
+        """
+        self.attributes['Loki Grafana Server.sandbox api ip'] = value
+
+    @property
+    def sandbox_api_port(self):
+        """
+        :rtype: float
+        """
+        return self.attributes['Loki Grafana Server.sandbox api port'] if 'Loki Grafana Server.sandbox api port' in self.attributes else None
+
+    @sandbox_api_port.setter
+    def sandbox_api_port(self, value='82'):
+        """
+        port of api host
+        :type value: float
+        """
+        self.attributes['Loki Grafana Server.sandbox api port'] = value
+
+    @property
+    def sandbox_api_https(self):
+        """
+        :rtype: bool
+        """
+        return self.attributes['Loki Grafana Server.sandbox api https'] if 'Loki Grafana Server.sandbox api https' in self.attributes else None
+
+    @sandbox_api_https.setter
+    def sandbox_api_https(self, value=False):
+        """
+        whether sandbox api is configured with https
+        :type value: bool
+        """
+        self.attributes['Loki Grafana Server.sandbox api https'] = value
+
+    @property
+    def promtail_dispro_job(self):
+        """
+        :rtype: str
+        """
+        return self.attributes['Loki Grafana Server.promtail dispro job'] if 'Loki Grafana Server.promtail dispro job' in self.attributes else None
+
+    @promtail_dispro_job.setter
+    def promtail_dispro_job(self, value='DisProLog'):
+        """
+        name of job tailing the dispro json log
+        :type value: str
+        """
+        self.attributes['Loki Grafana Server.promtail dispro job'] = value
+
+    @property
+    def promtail_teamserver_job(self):
+        """
+        :rtype: str
+        """
+        return self.attributes['Loki Grafana Server.promtail teamserver job'] if 'Loki Grafana Server.promtail teamserver job' in self.attributes else None
+
+    @promtail_teamserver_job.setter
+    def promtail_teamserver_job(self, value='TeamServerLog'):
+        """
+        name of job tailing the teamserver json log
+        :type value: str
+        """
+        self.attributes['Loki Grafana Server.promtail teamserver job'] = value
+
+    @property
     def grafana_dashboard_url(self):
         """
         :rtype: str

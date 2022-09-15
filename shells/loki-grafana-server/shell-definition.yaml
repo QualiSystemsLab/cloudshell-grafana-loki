@@ -2,8 +2,8 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 
 metadata:
   template_name: Loki Grafana Server
-  template_author: Anonymous
-  template_version: 0.1.0
+  template_author: QualiLab
+  template_version: 0.1.1
   template_icon: shell-icon.png
 
 description: >
@@ -17,10 +17,36 @@ node_types:
   vendor.resource.Loki Grafana Server:
     derived_from: cloudshell.nodes.GenericResource
     properties:
+      loki port:
+        type: integer          # optional values: string, integer, float, boolean, cloudshell.datatypes.Password
+        default: 3100
+        description: port loki is hosted on
+      loki https:
+        type: boolean          # optional values: string, integer, float, boolean, cloudshell.datatypes.Password
+        default: false
+        description: set to true for https protocol
+      sandbox api ip:
+        type: string          # optional values: string, integer, float, boolean, cloudshell.datatypes.Password
+        description: ip of sandbox api server
+      sandbox api port:
+        type: integer          # optional values: string, integer, float, boolean, cloudshell.datatypes.Password
+        default: 82
+        description: port of api host
+      sandbox api https:
+        type: boolean          # optional values: string, integer, float, boolean, cloudshell.datatypes.Password
+        default: false
+        description: whether sandbox api is configured with https
+      promtail dispro job:
+        type: string          # optional values: string, integer, float, boolean, cloudshell.datatypes.Password
+        default: DisProLog
+        description: name of job tailing the dispro json log
+      promtail teamserver job:
+        type: string          # optional values: string, integer, float, boolean, cloudshell.datatypes.Password
+        default: TeamServerLog
+        description: name of job tailing the teamserver json log
       grafana dashboard url:
         type: string          # optional values: string, integer, float, boolean, cloudshell.datatypes.Password
-        default: http://localhost:3000/goto/IXuCCtX7z?orgId=1
-        description: Some attribute description
+        description: web link to grafana dashboard
     capabilities:
       auto_discovery_capability:
         type: cloudshell.capabilities.AutoDiscovery

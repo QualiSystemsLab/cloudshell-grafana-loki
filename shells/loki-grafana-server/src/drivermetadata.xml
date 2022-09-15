@@ -1,8 +1,40 @@
-<Driver Description="Describe the purpose of your CloudShell shell" MainClass="driver.LokiGrafanaServerDriver" Name="LokiGrafanaServerDriver" Version="1.0.0" PythonVersion="3">
+<Driver Description="Describe the purpose of your CloudShell shell" MainClass="driver.LokiGrafanaServerDriver"
+        Name="LokiGrafanaServerDriver" Version="1.0.0" PythonVersion="3">
     <Layout>
-         <Category Name="Hidden Commands">
-            <Command Description="" DisplayName="Orchestration Save" Name="orchestration_save" />
-            <Command Description="" DisplayName="Orchestration Restore" Name="orchestration_restore" />
+        <Category Name="Hidden Commands">
+            <Command Description="" DisplayName="Orchestration Save" Name="orchestration_save"/>
+            <Command Description="" DisplayName="Orchestration Restore" Name="orchestration_restore"/>
+            <Command Name="push_setup_activity" DisplayName="Push Setup Activity" Tags="allow_unreserved"
+                     Description="push sandbox activity to Loki">
+                <Parameters>
+                    <Parameter Name="sandbox_id" Type="String" Mandatory="True" DisplayName="Sandbox Id"
+                               Description="sandbox_id"/>
+                </Parameters>
+            </Command>
+            <Command Name="push_teardown_activity" DisplayName="Push Teardown Activity" Tags="allow_unreserved"
+                     Description="push sandbox activity to Loki">
+                <Parameters>
+                    <Parameter Name="sandbox_id" Type="String" Mandatory="True" DisplayName="Sandbox Id"
+                               Description="sandbox_id"/>
+                </Parameters>
+            </Command>
+        </Category>
+        <Category Name="Query Logs">
+            <Command Name="get_sandbox_dispro_logs" DisplayName="Sandbox DisPro Logs" Tags=""
+                     Description="sandbox id filtered dispro logs">
+            </Command>
+            <Command Name="get_team_server_logs" DisplayName="Team Server Logs" Tags="allow_unreserved"
+                     Description="team server logs">
+                <Parameters>
+                    <Parameter Name="error_filter" Type="Lookup" Mandatory="True" DisplayName="Error Filter"
+                               AllowedValues="True,False" DefaultValue="False"
+                               Description="filter for ERROR and FATAL level messages"/>
+                </Parameters>
+            </Command>
+        </Category>
+        <Category Name="Health Check">
+            <Command Description="Health Check Server" DisplayName="Health Check" Name="health_check"
+                     Tags="allow_unreserved"/>
         </Category>
     </Layout>
 </Driver>
