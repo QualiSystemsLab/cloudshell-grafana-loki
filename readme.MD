@@ -66,6 +66,7 @@ log browser labels:
    - Loki Server Details (for talking to Loki)
    - Sandbox Api Details (for pulling sandbox events)
 3. Loki Server resource does NOT have to be in sandbox, but does have to be in same cloudshell domain
+4. Customize Setup / Teardown to trigger proper command on shell. See examples in orchestration folder
 
 ## Loki Server Shell In Sandbox
 Dashboards can be explored in Grafana, or Loki shell can be triggered directly from sandbox to query select target logs.
