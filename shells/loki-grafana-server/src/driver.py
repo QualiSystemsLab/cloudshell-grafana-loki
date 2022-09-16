@@ -1,6 +1,8 @@
 import json
+import time
+from typing import Union, List
 
-from cloudshell.api.cloudshell_api import SandboxDataKeyValue
+from cloudshell.api.cloudshell_api import SandboxDataKeyValue, CloudShellAPISession
 from cloudshell.shell.core.resource_driver_interface import ResourceDriverInterface
 from cloudshell.shell.core.driver_context import InitCommandContext, ResourceCommandContext, AutoLoadResource, \
     AutoLoadAttribute, AutoLoadDetails, CancellationContext
@@ -177,6 +179,31 @@ class LokiGrafanaServerDriver(ResourceDriverInterface):
             "orch_stage": "post-setup"
         }
 
+    @staticmethod
+    def _get_latest_events(api: CloudShellAPISession, sandbox_api: SandboxRestApiSession, sandbox_id: str) -> List[dict]:
+        latest_events = []
+
+        # look for previously set id in sandbox data
+        sb_data = api.GetSandboxData(sandbox_id).SandboxDataKeyValues
+        setup_id = next((x.Value for x in sb_data if x.Key == SB_DATA_SETUP_KEY), None)
+        if setup_id:
+            starting_id = int(setup_id) + 2
+            activity = sandbox_api.get_sandbox_activity(sandbox_id, from_event_id=starting_id)
+        else:
+            activity = sandbox_api.get_sandbox_activity(sandbox_id)
+        latest_events.append(activity["events"])
+
+        # handle pagination use case for lots of events
+        is_more_pages = activity["more_pages"]
+        next_id = activity["next_event_id"]
+        while is_more_pages:
+            activity = sandbox_api.get_sandbox_activity(sandbox_id, from_event_id=next_id)
+            latest_events.append(activity["events"])
+            is_more_pages = activity["more_pages"]
+            next_id = activity["next_event_id"]
+            time.sleep(2)  # throttle api calls if there are a ton of events
+        return latest_events
+
     def push_setup_activity(self, context, sandbox_id):
         """
         :param ResourceCommandContext context:
@@ -187,10 +214,10 @@ class LokiGrafanaServerDriver(ResourceDriverInterface):
         sandbox_api = self._get_sandbox_rest_client(context)
         loki_handler = self._get_loki_client(context)
         stream_labels = self._get_loki_setup_labels(sandbox_id)
-        activity = sandbox_api.get_sandbox_activity(sandbox_id)
-        events = activity["events"]
+        events = self._get_latest_events(api, sandbox_api, sandbox_id)
         if not events:
             return
+
         # save last event id, so teardown knows where to pick up
         last_event_id = str(events[-1]["id"])
 
@@ -211,14 +238,7 @@ class LokiGrafanaServerDriver(ResourceDriverInterface):
         sandbox_api = self._get_sandbox_rest_client(context)
         loki_handler = self._get_loki_client(context)
         stream_labels = self._get_loki_teardown_labels(sandbox_id)
-        sb_data = api.GetSandboxData(sandbox_id).SandboxDataKeyValues
-        setup_id = next((x.Value for x in sb_data if x.Key == SB_DATA_SETUP_KEY), None)
-        if setup_id:
-            starting_id = int(setup_id) + 2
-            activity = sandbox_api.get_sandbox_activity(sandbox_id, from_event_id=starting_id)
-        else:
-            activity = sandbox_api.get_sandbox_activity(sandbox_id)
-        events = activity["events"]
+        events = self._get_latest_events(api, sandbox_api, sandbox_id)
         if not events:
             return
         loki_handler.push_message_dicts(stream_labels, events)

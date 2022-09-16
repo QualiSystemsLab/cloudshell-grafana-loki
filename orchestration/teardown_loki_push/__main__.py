@@ -1,7 +1,7 @@
 from cloudshell.workflow.orchestration.sandbox import Sandbox
 from cloudshell.workflow.orchestration.teardown.default_teardown_orchestrator import DefaultTeardownWorkflow
 from cloudshell.helpers.sandbox_reporter.reporter import SandboxReporter
-from push_loki import push_loki_teardown
+from push_loki import push_to_loki_teardown
 
 sandbox = Sandbox()
 reporter = SandboxReporter(api=sandbox.automation_api,
@@ -19,5 +19,4 @@ except Exception as e:
 else:
     reporter.success("Teardown complete!")
 finally:
-    reporter.warning("Pushing Loki Teardown Logs..")
-    push_loki_teardown(api=sandbox.automation_api, sandbox_id=sandbox.id)
+    push_to_loki_teardown(api=sandbox.automation_api, sandbox_id=sandbox.id, reporter=reporter)

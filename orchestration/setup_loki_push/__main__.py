@@ -1,7 +1,7 @@
 from cloudshell.workflow.orchestration.sandbox import Sandbox
 from cloudshell.workflow.orchestration.setup.default_setup_orchestrator import DefaultSetupWorkflow
 from cloudshell.helpers.sandbox_reporter.reporter import SandboxReporter
-from push_loki import push_loki_setup
+from push_loki import push_to_loki_setup
 
 sandbox = Sandbox()
 
@@ -21,5 +21,4 @@ except Exception as e:
 else:
     reporter.success("Setup complete!")
 finally:
-    reporter.warning("Pushing Loki Setup Logs..")
-    push_loki_setup(api=sandbox.automation_api, sandbox_id=sandbox.id)
+    push_to_loki_setup(api=sandbox.automation_api, sandbox_id=sandbox.id, reporter=reporter)

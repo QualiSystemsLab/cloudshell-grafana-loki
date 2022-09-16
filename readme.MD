@@ -1,22 +1,24 @@
 # Cloudshell Loki-Grafana Centralized Logging 
-This repo documents a sample implementation of cloudshell centralized logging with the Grafana / Loki / Promtail stack.
-As cloudshell outputs JSON logs, these can be ingested into any centralized logging tool, not just Elastic stack.
-Having logs in central location allows to search logs from multiple servers related to the same sandbox.
+This repo documents a sample implementation of cloudshell centralized logging with Grafana / Loki / Promtail stack.
 
-### Sample Grafana Dashboard
+Cloudshell outputs JSON logs that can be ingested into centralized logging tools such as Elastic / Loki.
+Centralized Logging is beneficial for tracking sandbox events that can occur across multiple servers.
+
+Read more on cloudshell centralized logging in [help article](https://help.quali.com/Online%20Help/0.0/Portal/Content/IG/CentralLog/central-logging-overview.htm?Highlight=centralized%20logging).
+
+### Sample Grafana Log Dashboard
 ![Loki](images/sample_error_dashboard.png)
 
 ## Solution Architecture
 Grafana provides dashboard UI, Loki is the backend logging aggregator, Promtail agent installed on all Quali components.
-These components are analagous to elastic stack: 
-- Kibana -> Grafana
-- Loki -> Elastic
-- Promtail -> FluentD / Filebeat
+These components are analagous to elastic stack components of Elastic / Kibana / Filebeat.
 
-#### Generic Architecture
+Standard Loki Architecture:
+
 ![Loki](images/loki-architecture.png)
 
-#### Cloudshell Integration Architecture
+Cloudshell Integration:
+
 ![Cloudshell Loki Architecture](images/cloudshell-loki-architecture.drawio.png)
 
 ## Setup and Usage
@@ -35,28 +37,59 @@ These components are analagous to elastic stack:
 8. Customize dashboards
 9. Add cloudshell Loki service to cloudshell, which gives option to optionally present loki data from sandbox via Loki API calls
 
-## Customizing LogQL Samples
-Loki / Grafana uses LogQL syntax which can allow to target specific keywords / fields / files. Queries can be very flexible and customized to user needs.
+## Push Sandbox Events To Loki
+An alternative workflow to promtail monitoring of log files, is to push data directly into Loki. 
+A good candidate workflow is to pull sandbox activity events and push directly into Loki without need for intermediary files. 
+A custom "Loki Server" shell with these commands is included.
+
+#### Solution Flow
+1. At end of sandbox setup, pull sandbox events with [sandbox api call](https://help.quali.com/Online%20Help/0.0/Portal/Content/API/RefGuides/Sndbx-REST-API/REST-API-V2-Ref-Guide.htm?Highlight=sandbox%20api#sandbox10).
+2. Store latest sandbox event in sandbox data, push setup events data into Loki
+3. At end of teardown, read last cached event id in sandbox data and make api call to gather remaining events
+4. Push Post-setup events into Loki
+
+sample flow output:
+
+![Loki Cloudshell Service](images/loki_sandbox_events.png)
+
+sandbox events in grafana:
+
+![Loki Cloudshell Service](images/grafana_sandbox_events.png)
+
+log browser labels:
+
+![Loki Cloudshell Service](images/loki_pusher_labels.png)
+
+#### Usage
+1. Import "Loki Server" Shell and create resource
+2. Add all relevant attribute data to Loki Server Shell
+   - Loki Server Details (for talking to Loki)
+   - Sandbox Api Details (for pulling sandbox events)
+3. Loki Server resource does NOT have to be in sandbox, but does have to be in same cloudshell domain
+
+## Loki Server Shell In Sandbox
+Dashboards can be explored in Grafana, or Loki shell can be triggered directly from sandbox to query select target logs.
+
+
+Sample command pulling Dispro Quali Server logs:
+
+![Dispro Logs](images/get_logs_sample.png)
+
+## Customizing LogQL Queries
+Loki / Grafana uses LogQL syntax which can allow to target job labels, or filter by target json field of logs.
 
 sample filter to pull "dispro" logs of a target sandbox ID:
-
 `{job="qualiserver"} | json | category="DistributedProvisioning.Execution" |= "b83d649f-319b-4545-bf56-39b65b30668a"`
 
 Pull sandbox setup via wildcard filter:
-
 `{filename=~".*b83d649f-319b-4545-bf56-39b65b30668a.*Setup.*",job="sandboxlogs"}`
 
-## Grafana Loki Server Shell
-Dashboards can be explored directly in Grafana, or alternatively a cloudshell shell can pull aggregated Loki Log data directly into sandbox console.
-As cloudshell shells have access to the sandbox ID via it's context object, this can be forwarded directly into shell commands / Loki queries.
+Pass in top Level sandbox id variable into dashboard queries:
+![sandbox id var](images/sandbox_id_variable.png)
 
-Common use case - Setup fails, user can trigger command directly from sandbox to pull target log records and troubleshoot.
-
-#### Sample Shell command
-
-![Loki Cloudshell Service](images/grafana-server-shell.png)
-
-## References
+## References and Articles
 - [Grafana Loki High Level Intro](https://youtu.be/1obKa6UhlkY)
 - [Install blog](https://reachmnadeem.wordpress.com/2020/12/30/log-scrapping-made-easy-with-grafana-loki-in-windows/)
 - [LogQL Syntax](https://grafana.com/docs/loki/latest/logql/log_queries/)
+- [Push To Loki Article](https://medium.com/geekculture/pushing-logs-to-loki-without-using-promtail-fc31dfdde3c6)
+- [Grafana Variables](https://stackoverflow.com/a/69891457)
