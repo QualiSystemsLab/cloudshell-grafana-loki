@@ -191,14 +191,14 @@ class LokiGrafanaServerDriver(ResourceDriverInterface):
             activity = sandbox_api.get_sandbox_activity(sandbox_id, from_event_id=starting_id)
         else:
             activity = sandbox_api.get_sandbox_activity(sandbox_id)
-        latest_events.append(activity["events"])
+        latest_events.extend(activity["events"])
 
         # handle pagination use case for lots of events
         is_more_pages = activity["more_pages"]
         next_id = activity["next_event_id"]
         while is_more_pages:
             activity = sandbox_api.get_sandbox_activity(sandbox_id, from_event_id=next_id)
-            latest_events.append(activity["events"])
+            latest_events.extend(activity["events"])
             is_more_pages = activity["more_pages"]
             next_id = activity["next_event_id"]
             time.sleep(2)  # throttle api calls if there are a ton of events
