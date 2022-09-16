@@ -42,7 +42,7 @@ An alternative workflow to promtail monitoring of log files, is to push data dir
 A good candidate workflow is to pull sandbox activity events and push directly into Loki without need for intermediary files. 
 A custom "Loki Server" shell with these commands is included.
 
-#### Solution Flow
+Solution Flow:
 1. At end of sandbox setup, pull sandbox events with [sandbox api call](https://help.quali.com/Online%20Help/0.0/Portal/Content/API/RefGuides/Sndbx-REST-API/REST-API-V2-Ref-Guide.htm?Highlight=sandbox%20api#sandbox10).
 2. Store latest sandbox event in sandbox data, push setup events data into Loki
 3. At end of teardown, read last cached event id in sandbox data and make api call to gather remaining events
@@ -60,7 +60,7 @@ log browser labels:
 
 ![Loki Cloudshell Service](images/loki_pusher_labels.png)
 
-#### Usage
+### Setup and Usage Info
 1. Import "Loki Server" Shell and create resource
 2. Add all relevant attribute data to Loki Server Shell
    - Loki Server Details (for talking to Loki)
