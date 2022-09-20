@@ -4,13 +4,19 @@ from cloudshell.helpers.sandbox_reporter.reporter import SandboxReporter
 from push_loki import push_to_loki_setup
 
 sandbox = Sandbox()
-sandbox.suppress_exceptions = False  # needed so exceptions bubble up
+sandbox.suppress_exceptions = False
 
 reporter = SandboxReporter(api=sandbox.automation_api,
                            reservation_id=sandbox.id,
                            logger=sandbox.logger)
 
+
+def throw_error(sandbox, components=None):
+    raise Exception("woops, workflow failed")
+
+
 DefaultSetupWorkflow().register(sandbox)
+sandbox.workflow.add_to_configuration(throw_error)
 
 reporter.warning("Beginning setup...")
 

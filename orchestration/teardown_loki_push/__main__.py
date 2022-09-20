@@ -4,6 +4,8 @@ from cloudshell.helpers.sandbox_reporter.reporter import SandboxReporter
 from push_loki import push_to_loki_teardown
 
 sandbox = Sandbox()
+sandbox.suppress_exceptions = False  # needed so exceptions bubble up
+
 reporter = SandboxReporter(api=sandbox.automation_api,
                            reservation_id=sandbox.id,
                            logger=sandbox.logger)

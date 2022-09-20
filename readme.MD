@@ -37,6 +37,18 @@ Cloudshell Integration:
 8. Customize dashboards
 9. Add cloudshell Loki service to cloudshell, which gives option to optionally present loki data from sandbox via Loki API calls
 
+## Customizing LogQL Queries
+Loki / Grafana uses LogQL syntax which can allow to target job labels, or filter by target json field of logs.
+
+sample filter to pull "dispro" logs of a target sandbox ID:
+`{job="qualiserver"} | json | category="DistributedProvisioning.Execution" |= "b83d649f-319b-4545-bf56-39b65b30668a"`
+
+Pull sandbox setup via wildcard filter:
+`{filename=~".*b83d649f-319b-4545-bf56-39b65b30668a.*Setup.*",job="sandboxlogs"}`
+
+Pass in top Level sandbox id variable into dashboard queries:
+![sandbox id var](images/sandbox_id_variable.png)
+
 ## Push Sandbox Events To Loki
 An alternative workflow to promtail monitoring of log files, is to push data directly into Loki. 
 A good candidate workflow is to pull sandbox activity events and push directly into Loki without need for intermediary files. 
@@ -63,30 +75,20 @@ log browser labels:
 ### Setup and Usage Info
 1. Import "Loki Server" Shell and create resource
 2. Add all relevant attribute data to Loki Server Shell
-   - Loki Server Details (for talking to Loki)
    - Sandbox Api Details (for pulling sandbox events)
+   - Loki Server Details (for pushing to Loki)
 3. Loki Server resource does NOT have to be in sandbox, but does have to be in same cloudshell domain
-4. Customize Setup / Teardown to trigger proper command on shell. See examples in orchestration folder
+4. Customize Setup / Teardown to trigger proper command on shell. See examples in [orchestration](orchestration) folder
 
 ## Loki Server Shell In Sandbox
-Dashboards can be explored in Grafana, or Loki shell can be triggered directly from sandbox to query select target logs.
-
+Dashboards can be explored in Grafana, or optionally Loki shell commands can be triggered directly from sandbox.
+The use case is to query select logs and print them to sandbox console instead of browsing Grafana UI.
 
 Sample command pulling Dispro Quali Server logs:
 
 ![Dispro Logs](images/get_logs_sample.png)
 
-## Customizing LogQL Queries
-Loki / Grafana uses LogQL syntax which can allow to target job labels, or filter by target json field of logs.
 
-sample filter to pull "dispro" logs of a target sandbox ID:
-`{job="qualiserver"} | json | category="DistributedProvisioning.Execution" |= "b83d649f-319b-4545-bf56-39b65b30668a"`
-
-Pull sandbox setup via wildcard filter:
-`{filename=~".*b83d649f-319b-4545-bf56-39b65b30668a.*Setup.*",job="sandboxlogs"}`
-
-Pass in top Level sandbox id variable into dashboard queries:
-![sandbox id var](images/sandbox_id_variable.png)
 
 ## References and Articles
 - [Grafana Loki High Level Intro](https://youtu.be/1obKa6UhlkY)
