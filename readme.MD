@@ -79,6 +79,8 @@ log browser labels:
    - Loki Server Details (for pushing to Loki)
 3. Loki Server resource does NOT have to be in sandbox, but does have to be in same cloudshell domain
 4. Customize Setup / Teardown to trigger proper command on shell. See examples in [orchestration](orchestration) folder
+   - Use Try / Finally to handle setup errors and then trigger Loki
+   - sandbox.suppress_exceptions needs to be set to False so that exceptions bubble up to be handled properly
 
 ## Loki Server Shell In Sandbox
 Dashboards can be explored in Grafana, or optionally Loki shell commands can be triggered directly from sandbox.
